@@ -5,7 +5,7 @@ APP_ABI := armeabi-v7a
 AAPP_OPTIM := debug
 
 # 与 AndroidMainfest.xml miniSDK必须一致  否则Unknown Application ABI
-APP_PLATFORM := android-14
+APP_PLATFORM := android-19
 
  # cpu stuff
  # 没有作用 ,需要控制 APP_ABI

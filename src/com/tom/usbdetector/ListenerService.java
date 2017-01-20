@@ -36,6 +36,7 @@ public class ListenerService extends Service {
 	public native boolean startUsbEventThread();
 	public native boolean stopUsbEventThread();
 	static public native char[] oneplusArray(int[] array);
+	public native void android_dynamic_register_native();
 	
 	// 在Java中创建线程调用JNI
 	private native int JavaThread(String str);
@@ -57,6 +58,10 @@ public class ListenerService extends Service {
 		Log.d(TAG , "loadLibrary path = " + libpath);
 		
 		System.out.print("System.out Test! 2\n");
+		
+		
+		android_dynamic_register_native();
+		
 		
 		mHandlerThread = new ListenerThread("ServerService");// 如果用Thread 没有不能设置looper,在DDMS中线程可以看到
 		mHandlerThread.start();// 必须先start才能 getLooper

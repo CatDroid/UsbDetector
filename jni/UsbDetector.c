@@ -18,6 +18,8 @@
 #include <poll.h>
 #include <assert.h>
 
+// 没有导出来，不能用 jniRegisterNativeMethods NELEM 等
+// #include "JNIHelp.h"
 
 #include "prebuilt/CreateSecondLib.h"
 
@@ -473,6 +475,18 @@ JNIEXPORT jint Java_com_tom_usbdetector_ListenerService_JavaThread( JNIEnv* env 
 	return 0;
 }
 
+JNIEXPORT void android_dynamic_register_native()
+{
+	ALOGD("android_dynamic_register_native DONE !");
+}
+
+static JNINativeMethod gMethods[] = {
+    {
+        "android_dynamic_register_native",
+        "()V",
+        (void *)android_dynamic_register_native
+    },
+};
 
 // 在NDK环境下，由于没有AndroidRuntime(不能调用AndroidRuntime::getJNIEnv AndroidRuntime::getJavaVM) 所以要用JNI_OnLoad
 // 在SDK环境下 没有这个限制
@@ -494,7 +508,14 @@ jint JNI_OnLoad(JavaVM *jvm, void *reserved)
 
     ALOGD("UsbDetector: loading JNI Done TOMCAT = %d\n", TOMCAT);
 
+    jclass clazz;
+    static const char* const kClassName =  "com/tom/usbdetector/ListenerService";
+    clazz = (*env)->FindClass(env,kClassName);
+    assert( clazz!= NULL );
 
+    (*env)->RegisterNatives(env, clazz , gMethods , sizeof(gMethods) / sizeof(gMethods[0]) );
+
+    (*env)->DeleteLocalRef(env,clazz);
 // 看Eclipse的Console
 #ifdef NDEBUG
 #warning "define Debug"
